@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="#why-seher">Why Seher</a> &nbsp;·&nbsp;
+  <a href="#ai-architecture">AI architecture</a> &nbsp;·&nbsp;
   <a href="#local-setup">Get started</a> &nbsp;·&nbsp;
   <a href="MESSAGE_FLOW.md">Message flow</a> &nbsp;·&nbsp;
   <a href="#deployment-data">Deployment</a> &nbsp;·&nbsp;
@@ -81,6 +82,30 @@ Knowledge responses include conversation context once. Admin lists use descendin
 The application timezone is `Asia/Kolkata` (IST). Templates, chat timestamps, and
 application logs use IST; logs include `+05:30`. With `USE_TZ=True`, database timestamps
 remain UTC-aware, preserving existing records and unambiguous time comparisons.
+
+## AI architecture
+
+Seher combines **multi-agent orchestration**, the **supervisor pattern**, **agent handoffs**,
+**RAG**, and **guardrails** in a LangGraph workflow, with **ChromaDB** for retrieval and
+**LLM evals** for assessing behavior.
+
+| Concept | How Seher uses it |
+| :--- | :--- |
+| **Multi-agent orchestration** | Coordinates configured safety, supervisor, support, crisis, output-review, and memory-summary roles. Each role has its own instructions and model settings; roles can share the same underlying LLM. Memory summarization runs after the response graph when a batch is ready. |
+| **LangGraph** | Represents message processing as nodes connected by fixed and conditional edges. Shared state carries the message, conversation context, safety assessment, route, retrieved passages, and response. |
+| **Supervisor pattern** | After a normal input-safety decision, a supervisor agent returns a structured choice between direct support and knowledge-assisted support. The supervisor chooses the path rather than writing the user-facing reply. |
+| **Handoff** | A crisis classification transfers handling from the safety agent to the crisis agent and records the handoff. This bypasses the supervisor and is an internal agent handoff, not a transfer to a human responder. |
+| **RAG — retrieval-augmented generation** | Embeds the current message, retrieves up to five matching reference chunks, and supplies their text to the support agent to inform its response. Retrieval uses indexed documents rather than live web browsing. |
+| **Chroma / ChromaDB** | Persists document embeddings and performs vector similarity searches. Django stores document text, chunk records, and retrieval traces, while Gemini provides embeddings. |
+| **Guardrails** | An input safety agent selects normal or crisis handling. An output reviewer can allow, revise, or block a draft. Pydantic validates structured decisions, and the crisis prompt restricts resource details to application-supplied information. These model-based checks do not guarantee safety or factual accuracy. |
+| **LLM evals** | Separate evaluation commands assess routing, response quality, retrieval, grounding, memory, output safety, and crisis-resource behavior, using model-based judgments where implemented. Results and metrics are stored for inspection; evaluation runs are separate from the live chat path. |
+
+Conversation memory combines recent messages with a rolling summary. Execution traces
+record routes, selected inputs and outputs, failures, and timings so the team can inspect
+behavior and evaluate changes to prompts, models, and retrieval.
+
+See [the complete message flow](MESSAGE_FLOW.md) for each node's inputs, decisions,
+outputs, and current limitations.
 
 ## Local setup
 
