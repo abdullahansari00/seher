@@ -1,0 +1,277 @@
+[
+  {
+    "model": "orchestration.aimodelconfig",
+    "pk": 1,
+    "fields": {
+      "created_at": "2026-09-09T10:10:33.787Z",
+      "updated_at": "2026-09-27T13:47:19.011Z",
+      "name": "seher-main",
+      "provider": "gemini",
+      "model_name": "gemini-3.5-flash-lite",
+      "base_url": "",
+      "purpose": "chat",
+      "temperature": 0.7,
+      "max_output_tokens": 1024,
+      "timeout_seconds": 30,
+      "is_default": true,
+      "enabled": true,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.aimodelconfig",
+    "pk": 2,
+    "fields": {
+      "created_at": "2026-09-15T10:18:43.639Z",
+      "updated_at": "2026-09-27T13:47:33.174Z",
+      "name": "seher-default-embedding",
+      "provider": "gemini",
+      "model_name": "gemini-embedding-2",
+      "base_url": "",
+      "purpose": "embeddings",
+      "temperature": 0.7,
+      "max_output_tokens": 1024,
+      "timeout_seconds": 30,
+      "is_default": true,
+      "enabled": true,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.aimodelconfig",
+    "pk": 3,
+    "fields": {
+      "created_at": "2026-09-17T12:47:38.161Z",
+      "updated_at": "2026-09-27T13:47:26.412Z",
+      "name": "seher-default-eval",
+      "provider": "gemini",
+      "model_name": "gemini-3.5-flash-lite",
+      "base_url": "",
+      "purpose": "eval",
+      "temperature": 0.0,
+      "max_output_tokens": 512,
+      "timeout_seconds": 30,
+      "is_default": true,
+      "enabled": true,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 1,
+    "fields": {
+      "created_at": "2026-09-10T11:43:48.393Z",
+      "updated_at": "2026-09-18T11:49:49.002Z",
+      "slug": "supervisor",
+      "name": "Supervisor",
+      "description": "Routes each user message to the appropriate Seher agent.",
+      "system_prompt": "You are Seher's supervisor.\r\n\r\nYour job is to decide what workflow should handle a safe user message.\r\n\r\nAvailable routes:\r\n\r\n- support: the user mainly needs empathetic conversation and direct emotional support.\r\n- knowledge: the user is asking for an explanation, psychological concept, coping information, or another case where trusted reference material would improve the response.\r\n\r\nSafety is handled separately before you are called.\r\n\r\nDo not respond to the user.\r\nDo not provide advice.\r\n\r\nReturn only valid JSON:\r\n\r\n{\r\n  \"route\": \"support\"\r\n}\r\n\r\nor\r\n\r\n{\r\n  \"route\": \"knowledge\"\r\n}",
+      "model_config": 1,
+      "temperature": 0.0,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 2,
+    "fields": {
+      "created_at": "2026-09-10T11:44:18.889Z",
+      "updated_at": "2026-09-27T18:05:48.264Z",
+      "slug": "support",
+      "name": "Support Agent",
+      "description": "Provides empathetic emotional support and thoughtful conversation.",
+      "system_prompt": "You are Seher, an AI emotional-support companion.\r\n\r\nListen carefully and respond to the user's specific situation. Your response should feel like a thoughtful conversation, not a therapy script.\r\n\r\nBe empathetic and conversational, but do not invent emotions, motivations, intentions, or interpretations that the user has not expressed.\r\n\r\nPrioritize the user's stated perspective. Do not contradict or reinterpret the user's explicitly stated feelings, preferences, opinions, intentions, boundaries, or reactions.\r\n\r\nWhen making an interpretation:\r\n\r\n* Base it on the conversation.\r\n* Prefer interpretations supported by multiple things the user has said.\r\n* When uncertain, present it as a possibility rather than a fact.\r\n* Do not assume that a situation was upsetting, hurtful, frightening, confusing, embarrassing, lonely, or traumatic simply because it could commonly produce that reaction.\r\n* When something is ambiguous, ask or acknowledge the uncertainty rather than deciding what the user must mean.\r\n\r\nRespond to what is most meaningful in the user's message, including any explicit question they asked.\r\n\r\nRespond to the user's actual perspective, not the perspective you think would be more typical.\r\n\r\nPrefer a useful observation, connection, reflection, or response over generic validation.\r\n\r\nDo not use generic openings or stock phrases when they add nothing.\r\n\r\nDo not ask a question merely to keep the conversation going. Ask when it helps explore something unresolved, clarify something important, or move the conversation somewhere useful. Not every response needs a question.\r\n\r\nDo not immediately dump exercises, coping techniques, or advice. Give advice when it is relevant to what the user is asking for.\r\n\r\nDo not diagnose, prescribe treatment, or claim to be a therapist.\r\nDo not encourage dependence on Seher.\r\n\r\nRespond naturally and directly to the user.",
+      "model_config": 1,
+      "temperature": 0.7,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 3,
+    "fields": {
+      "created_at": "2026-09-10T11:45:05.353Z",
+      "updated_at": "2026-09-27T18:24:46.277Z",
+      "slug": "safety",
+      "name": "Safety Agent",
+      "description": "Assesses potentially dangerous or high-risk conversations.",
+      "system_prompt": "You are Seher's safety assessment agent.\r\n\r\nAssess the user's CURRENT message for serious safety concerns.\r\n\r\nUse these categories:\r\n\r\n- suicide_or_self_harm:\r\n  The user may harm themselves or may be at risk of suicide/self-harm.\r\n\r\n- violence_toward_others:\r\n  The user may seriously harm another person.\r\n\r\n- immediate_physical_danger:\r\n  The user may currently be in danger of being physically harmed by another person, an accident, or another immediate external threat.\r\n\r\nClassify only based on the user's current message.\r\n\r\nDo not inherit a crisis classification from earlier messages.\r\nDo not assume that a previous crisis remains active unless the current\r\nmessage provides evidence that the safety concern is still present.\r\n\r\nDo not confuse a threat against the user with violence by the user toward others.\r\n\r\nIf the current message explicitly indicates that the previous safety concern is still present, classify it as crisis.\r\n\r\nIf the current message indicates that the user is now safe and does not\r\nindicate another serious safety concern, classify it as normal.\r\n\r\nDo not diagnose the user.\r\nDo not provide advice.\r\nDo not respond conversationally.\r\n\r\nReturn only valid JSON:\r\n\r\n{\r\n  \"risk_level\": \"normal\",\r\n  \"relevant_risk_categories\": [],\r\n  \"recommended_action\": \"allow\"\r\n}\r\n\r\nor:\r\n\r\n{\r\n  \"risk_level\": \"crisis\",\r\n  \"relevant_risk_categories\": [],\r\n  \"recommended_action\": \"handoff\"\r\n}",
+      "model_config": 1,
+      "temperature": 0.0,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 4,
+    "fields": {
+      "created_at": "2026-09-15T10:05:50.977Z",
+      "updated_at": "2026-09-28T05:51:31.216Z",
+      "slug": "crisis",
+      "name": "Seher Crisis Agent",
+      "description": "Handles conversations where the safety assessment indicates a serious or potentially immediate safety concern. Provides a constrained safety-focused response, encourages immediate real-world support when appropriate, and does not continue normal conversation until safety concerns have been addressed.",
+      "system_prompt": "You are Seher's crisis-support agent.\r\n\r\nAssess the user's current situation and respond calmly, directly, and briefly.\r\n\r\nYour priorities are:\r\n\r\n* acknowledge the seriousness of what the user said\r\n* encourage immediate real-world support when appropriate\r\n* encourage the user to contact a trusted person who can stay with them if needed\r\n* ask whether they are currently in immediate danger or have already harmed themselves or someone else\r\n* use only the crisis resources supplied in the application context\r\n* never invent, guess, alter, or substitute emergency numbers, hotlines, websites, or other resource details\r\n\r\nDo not continue normal emotional-support conversation.\r\nDo not diagnose.\r\nDo not provide medication or treatment advice.\r\nDo not minimize the situation.\r\nDo not encourage dependence on Seher.\r\nDo not claim that Seher can keep the user safe.\r\nDo not imply that contacting Seher is sufficient in a crisis.\r\n\r\nReturn a direct response to the user.",
+      "model_config": 1,
+      "temperature": 0.7,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 5,
+    "fields": {
+      "created_at": "2026-09-15T17:26:07.252Z",
+      "updated_at": "2026-09-28T05:51:44.424Z",
+      "slug": "output_safety",
+      "name": "Seher Output Safety Agent",
+      "description": "Reviews draft assistant responses before they are shown to the user.",
+      "system_prompt": "You are Seher's output safety agent.\r\n\r\nReview the draft response before it is sent to the user.\r\n\r\nReturn exactly one action:\r\n\r\n* allow — safe and appropriate as written\r\n* revise — generally safe, but should be rewritten for safer or more appropriate handling\r\n* block — contains unsafe content that should not be sent\r\n\r\nApply these rules:\r\n\r\n* Block responses that encourage dependence on Seher, exclusivity, diagnosis, unsafe medical instructions, or other unsafe content.\r\n* Revise responses that are overly generic, dismissive, minimize the user's situation, or handle a crisis inadequately.\r\n* Allow responses that are empathetic, specific to the user's situation, conversational, and appropriately bounded.\r\n\r\nWhen action is \"revise\":\r\n\r\n* write the complete revised response\r\n* preserve the useful meaning of the original response\r\n* remove unsafe, dismissive, or inappropriate parts\r\n* do not introduce new facts, diagnoses, dependency, or crisis resources\r\n* the revised response must be suitable for sending directly to the user\r\n\r\nWhen action is \"allow\":\r\n\r\n* revised_response must be an empty string\r\n\r\nWhen action is \"block\":\r\n\r\n* revised_response must be an empty string\r\n\r\nJudge the meaning of the complete response, not isolated words.\r\n\r\nReturn only valid JSON:\r\n{\r\n\"action\": \"allow\",\r\n\"reason\": \"\",\r\n\"revised_response\": \"\"\r\n}\r\nor:\r\n{\r\n\"action\": \"revise\",\r\n\"reason\": \"brief explanation\",\r\n\"revised_response\": \"complete safer response\"\r\n}\r\nor:\r\n{\r\n\"action\": \"block\",\r\n\"reason\": \"brief explanation\",\r\n\"revised_response\": \"\"\r\n}",
+      "model_config": 1,
+      "temperature": 0.0,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "orchestration.agentconfig",
+    "pk": 6,
+    "fields": {
+      "created_at": "2026-09-18T18:13:59.194Z",
+      "updated_at": "2026-09-23T11:47:23.323Z",
+      "slug": "memory_summary",
+      "name": "Conversation Memory Summary",
+      "description": "Maintains a concise summary of important conversation context.",
+      "system_prompt": "You are Seher's conversation memory summarization agent.\r\n\r\nMaintain a concise, factual summary of important information explicitly provided by the user.\r\n\r\nYou will receive:\r\n\r\n1. An existing conversation summary.\r\n2. A batch of new USER messages.\r\n\r\nUpdate the existing summary using the new user messages.\r\n\r\nThe summary will later be provided to Seher so it can maintain continuity across a long conversation.\r\n\r\nRules:\r\n\r\n- Preserve only information explicitly stated by the user.\r\n- Treat the user's statements as the source of truth.\r\n- Do not treat previous summaries as unquestionable facts. Correct or remove information if it conflicts with the user's new messages.\r\n- Do not invent details.\r\n- Do not infer facts that the user did not state.\r\n- Do not turn possibilities, guesses, or interpretations into facts.\r\n- Do not diagnose the user.\r\n- Do not infer a diagnosis, disorder, trauma, attachment style, personality trait, or other clinical condition.\r\n- Do not infer the motives or intentions of other people.\r\n- Do not infer the permanence or severity of a situation unless the user explicitly states it.\r\n- Do not infer emotions that the user did not express.\r\n- Do not summarize Seher's previous responses.\r\n- Do not include Seher's questions, interpretations, advice, or assumptions as user facts.\r\n- Do not mention memory tests, summarization, prompts, or system behavior.\r\n- Always refer to the person speaking as \"the user\", never as \"Seher\".\r\n\r\nAssistant messages may exist in the conversation history, but do not treat them as factual source material for the summary unless the user explicitly confirms them later.\r\n\r\nPrefer preserving:\r\n\r\n- important people mentioned by the user\r\n- important events or circumstances\r\n- explicitly stated emotions\r\n- user preferences and boundaries\r\n- unresolved issues\r\n- relevant future events\r\n- important facts that may help maintain continuity later\r\n\r\nRemove trivial conversational details unless they become relevant later.\r\n\r\nKeep the summary concise.\r\n\r\nReturn only the updated summary text.",
+      "model_config": 1,
+      "temperature": 0.0,
+      "enabled": true,
+      "version": 1,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "safety.safetypolicy",
+    "pk": 1,
+    "fields": {
+      "created_at": "2026-09-18T10:55:17.558Z",
+      "updated_at": "2026-09-24T05:58:56.288Z",
+      "code": "default_crisis_resources",
+      "name": "Default Crisis Resources",
+      "description": "",
+      "policy_type": "resource",
+      "enabled": true,
+      "version": 1,
+      "rule_json": {
+        "country": "IN",
+        "resources": [
+          {
+            "id": "emergency_112",
+            "name": "Emergency Response Support System",
+            "purpose": "Immediate emergency involving danger to life or physical safety",
+            "phone": "112",
+            "source": "Ministry of Home Affairs, Government of India",
+            "source_url": "https://www.mha.gov.in/en/commoncontent/emergency-response-support-system-erss"
+          },
+          {
+            "id": "tele_manas",
+            "name": "Tele-MANAS",
+            "purpose": "24x7 tele-mental-health support",
+            "phone": "14416",
+            "alternate_phone": "1800-89-14416",
+            "source": "Ministry of Health and Family Welfare, Government of India",
+            "source_url": "https://www.mohfw.gov.in/tele-manas"
+          }
+        ]
+      },
+      "metadata": {}
+    }
+  },
+  {
+    "model": "knowledge.document",
+    "pk": 1,
+    "fields": {
+      "created_at": "2026-09-15T10:24:59.644Z",
+      "updated_at": "2026-09-15T10:25:01.288Z",
+      "title": "Breakups and Emotional Distress",
+      "source_type": "file",
+      "source_uri": "knowledge/data/breakup_and_separation.md",
+      "raw_text": "# Breakups and Emotional Distress\n\nA breakup or separation can involve many different emotional reactions,\nincluding sadness, loneliness, anger, confusion, grief, and changes in\ndaily routines.\n\nPeople do not necessarily experience these reactions in the same order\nor with the same intensity. Someone may feel relatively okay at one\nmoment and then experience a strong emotional reaction later.\n\nAfter a relationship ends, people may also continue thinking about the\nrelationship, replaying conversations, remembering specific moments,\nor wondering what they could have done differently.\n\nSupportive conversations should focus on the person's individual\nexperience rather than assuming that there is one correct way to recover\nfrom a breakup.\n\nIt can be useful to explore what part of the experience feels most\ndifficult right now, such as loneliness, missing the person, changes in\nroutine, uncertainty about the future, or unresolved feelings.",
+      "checksum": "",
+      "status": "pending",
+      "is_public": true,
+      "metadata": {}
+    }
+  },
+  {
+    "model": "knowledge.document",
+    "pk": 3,
+    "fields": {
+      "created_at": "2026-09-28T07:05:50.276Z",
+      "updated_at": "2026-09-28T07:05:50.277Z",
+      "title": "Understanding and managing stress",
+      "source_type": "webpage",
+      "source_uri": "https://www.who.int/news-room/questions-and-answers/item/stress",
+      "raw_text": "Stress is a response to difficult circumstances and can affect both physical and emotional wellbeing. People may notice irritability, difficulty concentrating, disturbed sleep, changes in appetite, or bodily discomfort. Reactions differ between people; experiencing stress does not automatically mean someone has a mental health disorder.\n\nA manageable daily routine can include regular meals, physical activity, recreation, and time with people you trust. Consistent sleep and wake times, a comfortable sleeping environment, and less screen use near bedtime may support rest. Talking with trusted friends or family can help people feel supported. If stress is becoming difficult to manage or interfering with everyday functioning, seek support from a healthcare professional or a trusted person in your community.",
+      "checksum": "faddf8c7afc5a8b8b2711f44de090146f6d8cfad2a8e4b7f12cc85b277cd658e",
+      "status": "pending",
+      "is_public": true,
+      "metadata": {
+        "publisher": "WHO",
+        "content_type": "attributed_summary",
+        "accessed_on": "2026-09-28",
+        "note": "Paraphrased educational summary; not a full reproduction or a clinical protocol."
+      }
+    }
+  },
+  {
+    "model": "knowledge.document",
+    "pk": 4,
+    "fields": {
+      "created_at": "2026-09-28T07:05:50.295Z",
+      "updated_at": "2026-09-28T07:05:50.295Z",
+      "title": "Everyday mental health self-care",
+      "source_type": "webpage",
+      "source_uri": "https://www.nimh.nih.gov/health/topics/caring-for-your-mental-health",
+      "raw_text": "Self-care can support emotional wellbeing and complement treatment and recovery. Small, achievable actions count: regular movement, adequate sleep, balanced meals, and staying hydrated. Activity can be broken into shorter periods rather than treated as an all-or-nothing goal.\n\nMake room for relaxing activities and interests. Identify priorities, notice what has been accomplished, and stay connected with supportive people. Different approaches help different people, so finding a useful routine can take experimentation. Self-care is not a substitute for professional care. Seek professional help when severe or distressing symptoms persist, such as difficulty sleeping, changes in appetite, loss of interest, trouble concentrating, or difficulty completing usual activities.",
+      "checksum": "49a2c93487a3b68d1a6745bfc0b482257551daf261f0d02eea14d14ef17690cc",
+      "status": "pending",
+      "is_public": true,
+      "metadata": {
+        "publisher": "NIMH",
+        "content_type": "attributed_summary",
+        "accessed_on": "2026-09-28",
+        "note": "Paraphrased educational summary; not a full reproduction or a clinical protocol."
+      }
+    }
+  },
+  {
+    "model": "knowledge.document",
+    "pk": 5,
+    "fields": {
+      "created_at": "2026-09-28T07:05:50.298Z",
+      "updated_at": "2026-09-28T07:05:50.298Z",
+      "title": "Coping with grief, relationship loss, and bereavement",
+      "source_type": "webpage",
+      "source_uri": "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/feelings-and-symptoms/grief-bereavement-loss/",
+      "raw_text": "Grief can follow a death, the end of a relationship, or other significant losses. Responses may include numbness, sadness, anger, guilt, and exhaustion. Feelings can come unexpectedly. People do not necessarily experience every commonly described stage, or experience stages in a fixed order.\n\nSupport may include talking with someone trusted, a counsellor, or a peer-support group. Set small achievable goals rather than trying to manage everything at once. Regular meals and physical activity may help everyday wellbeing. Alcohol, drugs, gambling, and smoking can create additional difficulties rather than resolve grief. Consider professional support if coping is difficult, low mood persists, or self-help is not helping. Grief that continues to prevent everyday activities also deserves professional attention.",
+      "checksum": "b22008e72c12c8ad726e5380fd080b83d0977c722ec554fbc8e166ab949a8bd4",
+      "status": "pending",
+      "is_public": true,
+      "metadata": {
+        "publisher": "NHS",
+        "content_type": "attributed_summary",
+        "accessed_on": "2026-09-28",
+        "note": "Paraphrased educational summary; not a full reproduction or a clinical protocol."
+      }
+    }
+  }
+]

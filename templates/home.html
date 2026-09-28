@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Seher | Your AI Companion{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center text-center">
+    <div class="col-lg-8">
+
+        <h1 class="visually-hidden">Welcome to Seher</h1>
+        <img
+            src="{% static 'images/seher-wordmark.svg' %}"
+            class="home-wordmark"
+            width="1000"
+            height="480"
+            alt="Seher — A little space to feel heard."
+        >
+
+        <p class="lead text-muted mb-4">
+            A private space to talk, reflect, and work through what you're
+            going through.
+        </p>
+
+        {% if user.is_authenticated %}
+
+            <a
+                href="{% url 'conversations:hub' %}"
+                class="btn btn-primary btn-lg"
+            >
+                Continue with Seher
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'accounts:login' %}"
+                class="btn btn-primary btn-lg me-2"
+            >
+                Login
+            </a>
+
+            <a
+                href="{% url 'accounts:signup' %}"
+                class="btn btn-outline-primary btn-lg"
+            >
+                Create account
+            </a>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480" role="img" aria-labelledby="title description">
+  <title id="title">Seher</title>
+  <desc id="description">A tulip and sunflower beside the Seher name and the phrase: A little space to feel heard.</desc>
+  <g fill="none" stroke="#55715d" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M153 226 C150 303 205 368 253 412"/>
+    <path d="M330 206 C335 295 285 367 253 412"/>
+  </g>
+  <path d="M217 369 C158 367 114 330 108 288 C163 290 201 322 217 369Z" fill="#79977c"/>
+  <path d="M290 341 C301 293 340 268 385 274 C373 318 335 344 290 341Z" fill="#55715d"/>
+  <!-- Tulip: an open, three-pointed cup. -->
+  <path d="M153 238 C108 238 79 204 79 153 L79 112 L116 139 L153 95 L191 139 L228 112 L228 153 C228 204 199 238 153 238Z" fill="#d48491"/>
+  <path d="M79 112 C131 140 157 172 153 238 C108 238 79 204 79 153Z" fill="#e6a1a9"/>
+  <path d="M228 112 C180 139 153 176 153 238 C199 238 228 204 228 153Z" fill="#b96578"/>
+  <!-- Sunflower: twelve petals around a warm seed head. -->
+  <g fill="#e5b44b">
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(0 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(30 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(60 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(90 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(120 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(150 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(180 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(210 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(240 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(270 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(300 330 137)"/>
+      <ellipse cx="330" cy="65" rx="18" ry="35" transform="rotate(330 330 137)"/>
+  </g>
+  <circle cx="330" cy="137" r="46" fill="#71513e"/>
+  <circle cx="330" cy="137" r="34" fill="#89634a"/>
+  <g fill="#d6b182">
+    <circle cx="330" cy="117" r="3.5"/><circle cx="347" cy="127" r="3.5"/>
+    <circle cx="347" cy="147" r="3.5"/><circle cx="330" cy="157" r="3.5"/>
+    <circle cx="313" cy="147" r="3.5"/><circle cx="313" cy="127" r="3.5"/>
+    <circle cx="330" cy="137" r="3.5"/>
+  </g>
+  <text x="480" y="242" fill="#303d37" font-family="Georgia, 'Times New Roman', serif" font-size="118" letter-spacing="-4">Seher</text>
+  <text x="486" y="301" fill="#7a6f63" font-family="Georgia, 'Times New Roman', serif" font-size="25" font-style="italic">A little space to feel heard.</text>
+</svg>

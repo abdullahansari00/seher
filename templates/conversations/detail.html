@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chat | Seher{% endblock %}
+
+{% block body_class %}chat-page d-flex flex-column{% endblock %}
+
+{% block main_class %}chat-main{% endblock %}
+
+{% block navbar_items %}
+
+    <div class="navbar-section navbar-section-left">
+        <a
+            href="/"
+            class="navbar-brand-custom"
+        >
+            <img
+                        src="{% static 'images/seher-logo.svg' %}"
+                        class="navbar-brand-logo"
+                        width="44"
+                        height="42"
+                        alt=""
+                    >
+                    <span>Seher</span>
+        </a>
+
+        <a
+            href="{% url 'conversations:hub' %}"
+            class="navbar-link navbar-chat-link navbar-link-active"
+        >
+            Chat
+        </a>
+    </div>
+
+    <div class="navbar-section navbar-section-center">
+        <span class="navbar-note">
+            A private space to talk things through.
+        </span>
+    </div>
+
+    <div class="navbar-section navbar-section-right">
+
+        <a
+            href="{% url 'conversations:history' %}"
+            class="btn btn-outline-secondary btn-sm navbar-action"
+        >
+            History
+        </a>
+
+        {% if conversation.status == "active" %}
+            <form
+                method="post"
+                action="{% url 'conversations:close' conversation.pk %}"
+                class="d-inline"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-danger btn-sm navbar-action"
+                >
+                    Close
+                </button>
+            </form>
+        {% endif %}
+
+        <span class="navbar-user">
+            Hi, {{ user.username }}
+        </span>
+
+        <form
+            method="post"
+            action="{% url 'accounts:logout' %}"
+            class="d-inline"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-outline-danger btn-sm navbar-action"
+            >
+                Logout
+            </button>
+        </form>
+
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="chat-layout">
+
+    {% if conversation.mode == "crisis" %}
+        <div
+            class="alert alert-warning chat-notice flex-shrink-0"
+            role="alert"
+        >
+            <div class="fw-semibold mb-1">
+                Safety-focused conversation
+            </div>
+
+            <div class="small">
+                Seher is currently focused on your immediate safety.
+                Normal conversation will resume after the safety concern
+                has been resolved.
+            </div>
+        </div>
+    {% endif %}
+
+    {% if conversation.status == "closed" %}
+        <div
+            class="alert alert-secondary chat-notice flex-shrink-0"
+            role="alert"
+        >
+            This conversation is closed. You can review the conversation
+            below, but you cannot send new messages here.
+        </div>
+    {% endif %}
+
+    <div
+        id="chat-processing"
+        class="alert alert-light chat-notice d-flex align-items-center gap-2 flex-shrink-0 {% if not is_waiting %}d-none{% endif %}"
+        role="status"
+        aria-live="polite"
+    >
+        <span
+            class="spinner-grow spinner-grow-sm"
+            aria-hidden="true"
+        ></span>
+
+        <span>
+            Seher is thinking...
+        </span>
+    </div>
+
+    <div class="chat-card">
+
+        <div
+            id="chat-messages"
+            class="chat-messages"
+        >
+
+            {% if conversation.messages.all %}
+
+                {% for message in conversation.messages.all %}
+
+                    <div
+                        class="message-row
+                        {% if message.role == 'user' %}
+                            message-row-user
+                        {% else %}
+                            message-row-assistant
+                        {% endif %}"
+                    >
+                        <div
+                            class="message-bubble
+                            {% if message.role == 'user' %}
+                                message-bubble-user
+                            {% else %}
+                                message-bubble-assistant
+                            {% endif %}"
+                        >
+                            <div class="message-time">
+                                {{ message.created_at|date:"M d, Y H:i" }}
+                            </div>
+
+                            <div class="message-content">{{ message.content }}</div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-chat text-center">
+                    <div class="display-6 mb-3">💬</div>
+
+                    <h5 class="mb-2">
+                        Start whenever you're ready.
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        You can talk about what's on your mind.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% if can_send_message %}
+
+        <div class="chat-composer flex-shrink-0">
+            <div class="chat-composer-inner">
+
+                <div
+                    id="chat-error"
+                    class="alert alert-danger d-none"
+                    role="alert"
+                ></div>
+
+                <form
+                    id="chat-form"
+                    method="post"
+                    action="{% url 'conversations:send' conversation.pk %}"
+                >
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {{ form.content }}
+
+                        {% for error in form.content.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button
+                            id="send-button"
+                            type="submit"
+                            class="btn btn-primary px-4"
+                            {% if is_waiting %}disabled{% endif %}
+                        >
+                            Send
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="chat-composer flex-shrink-0">
+            <div class="chat-composer-inner text-center">
+
+                {% if conversation.status == "closed" %}
+
+                    <a
+                        href="{% url 'conversations:hub' %}"
+                        class="btn btn-primary"
+                    >
+                        Start a new conversation
+                    </a>
+
+                {% elif is_waiting %}
+
+                    <p class="text-muted mb-0">
+                        Please wait for Seher's response.
+                    </p>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    {% endif %}
+
+</div>
+
+<script src="{% static 'js/conversation.js' %}"></script>
+
+{% endblock %}
